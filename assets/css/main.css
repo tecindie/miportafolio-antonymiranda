@@ -2442,4 +2442,26 @@ input, select, textarea {
 						margin-top: 0;
 					}
 
-	}
+	}	
+* {box-sizing:border-box}
+
+.container-skill {
+	width: 100%; /* Full width */
+	background-color: #ddd; /* Grey background */
+  }
+
+.skills {
+
+	background-color: #ddd;
+  text-align: right; /* Right-align text */
+  padding-top: 10px; /* Add top padding */
+  padding-bottom: 10px; /* Add bottom padding */
+  color: white; /* White text color */
+}
+
+.java {width: 90%; background-color: #5a04aa;} /* Green */
+.mysql {width: 75%; background-color: #2196F3;} /* Blue */
+.js {width: 95%; background-color: #f5e20b;} /* Red */
+.node {width: 80%; background-color: #04f010;} /* Dark Grey */
+.python {width: 80%; background-color: #f09204;} /* Dark Grey */
+.react {width: 85%; background-color: #05cdffa2;} /* Dark Grey */
