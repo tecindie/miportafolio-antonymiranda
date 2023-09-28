@@ -1,226 +1,250 @@
-/*==================== MENU SHOW Y HIDDEN ====================*/
+/*
+	Landed by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+*/
 
-const navMenu = document.getElementById('nav-menu'),
-      navToggle = document.getElementById('nav-toggle'),
-      navClose = document.getElementById('nav-close')
+(function($) {
 
-/*===== MENU SHOW =====*/
-/* Validate if constant exists */
+	var	$window = $(window),
+		$body = $('body');
 
-if (navToggle){
-    navToggle.addEventListener('click',() =>{
-        navMenu.classList.add('show-menu')
- })
-}
+	// Breakpoints.
+		breakpoints({
+			xlarge:   [ '1281px',  '1680px' ],
+			large:    [ '981px',   '1280px' ],
+			medium:   [ '737px',   '980px'  ],
+			small:    [ '481px',   '736px'  ],
+			xsmall:   [ null,      '480px'  ]
+		});
 
-/*===== MENU HIDDEN =====*/
-/* Validate if constant exists */
-if(navClose){
-    navClose.addEventListener('click',() =>{
-        navMenu.classList.remove('show-menu')
-    })    
-}
-/*==================== REMOVE MENU MOBILE ====================*/
-const navLink = document.querySelectorAll('.nav__link')
+	// Play initial animations on page load.
+		$window.on('load', function() {
+			window.setTimeout(function() {
+				$body.removeClass('is-preload');
+			}, 100);
+		});
 
-function linkAction(){
-    const navMenu = document.getElementById('nav-menu')
-    // when we click on each nav__link, we remove the show-menu class
-    navMenu.classList.remove('show-menu')
-}
-navLink.forEach( n => n.addEventListener('click',linkAction))
-/*==================== ACCORDION SKILLS ====================*/
+	// Touch mode.
+		if (browser.mobile)
+			$body.addClass('is-touch');
 
-const skillsContent = document.getElementsByClassName('skills__content'),
-      skillsHeader = document.querySelectorAll('.skills__header')
+	// Scrolly links.
+		$('.scrolly').scrolly({
+			speed: 2000
+		});
 
-function toggleSkills(){
-    let itemClass = this.parentNode.className
+	// Dropdowns.
+		$('#nav > ul').dropotron({
+			alignment: 'right',
+			hideDelay: 350
+		});
 
-    for( i=0 ; i < skillsContent.length ; i++){
-        skillsContent[i].className = 'skills__content skills__close'
-    }
+	// Nav.
 
-    if(itemClass === 'skills__content skills__close'){
-        this.parentNode.className = 'skills__content skills__open'
-        }
-}
+		// Title Bar.
+			$(
+				'<div id="titleBar">' +
+					'<a href="#navPanel" class="toggle"></a>' +
+					'<span class="title">' + $('#logo').html() + '</span>' +
+				'</div>'
+			)
+				.appendTo($body);
 
- skillsHeader.forEach((el) =>{
-    el.addEventListener( 'click' , toggleSkills)
- } )
-/*==================== QUALIFICATION TABS ====================*/
+		// Panel.
+			$(
+				'<div id="navPanel">' +
+					'<nav>' +
+						$('#nav').navList() +
+					'</nav>' +
+				'</div>'
+			)
+				.appendTo($body)
+				.panel({
+					delay: 500,
+					hideOnClick: true,
+					hideOnSwipe: true,
+					resetScroll: true,
+					resetForms: true,
+					side: 'left',
+					target: $body,
+					visibleClass: 'navPanel-visible'
+				});
 
-const tabs = document.querySelectorAll('[data-target]'),
-      tabContents = document.querySelectorAll('[data-content]')
+	// Parallax.
+	// Disabled on IE (choppy scrolling) and mobile platforms (poor performance).
+		if (browser.name == 'ie'
+		||	browser.mobile) {
 
-tabs.forEach(tab =>{
-    tab.addEventListener('click',()=>{
-        const target = document.querySelector(tab.dataset.target)
+			$.fn._parallax = function() {
 
-        tabContents.forEach(tabContent =>{
-            tabContent.classList.remove('qualification__active')
-        })
-        target.classList.add('qualification__active')
+				return $(this);
 
-        tabs.forEach(tab =>{
-            tab.classList.remove('qualification__active')
-        })
-        tab.classList.add('qualification__active')
-    })
-})
+			};
 
+		}
+		else {
 
-/*==================== SERVICES MODAL ====================*/
+			$.fn._parallax = function() {
 
-const modalViews = document.querySelectorAll('.services__modal'),
-    modalBtns = document.querySelectorAll('.services__button'),
-    modalCloses = document.querySelectorAll('.services__modal-close')
+				$(this).each(function() {
 
-let modal = function(modalClick){
-    modalViews[modalClick].classList.add('active-modal')
-}
+					var $this = $(this),
+						on, off;
 
-modalBtns.forEach((modalBtn, i) => {
-    modalBtn.addEventListener('click', () => {
-        modal(i)
-    })
-})
+					on = function() {
 
-modalCloses.forEach((modalClose) =>{
-    modalClose.addEventListener('click',() =>{
-        modalViews.forEach((modalViews) =>{
-            modalViews.classList.remove('active-modal')
-        })
-    })
-})
-/*==================== PORTFOLIO SWIPER  ====================*/
+						$this
+							.css('background-position', 'center 0px');
 
-let swiperPorfolio = new Swiper('.portfolio__container',{
-    cssMode:true,
-    loop:true,
+						$window
+							.on('scroll._parallax', function() {
 
-    navigation:{
-        nextEl:'.swiper-button-next',
-        prevEl:'.swiper-button-prev',
-    },
+								var pos = parseInt($window.scrollTop()) - parseInt($this.position().top);
 
-    pagination:{
-        el: '.swiper-pagination',
-        clickable:true,
-    },    
-});
+								$this.css('background-position', 'center ' + (pos * -0.15) + 'px');
 
-/*==================== TESTIMONIAL ====================*/
-let swiperTestimonial = new Swiper('.testimonial__container',{
-    loop: true,
-    grabCursor: true,
-    spaceBetween: 48,
+							});
 
-    pagination:{
-        el: '.swiper-pagination',
-        clickable: true,
-        dymanicBullets: true,
-    },
-    breakpoints:{
-        568:{
-            slidesPerView: 2,
-        }
-    }
-});
-/*==================== SCROLL SECTIONS ACTIVE LINK ====================*/
-const sections = document.querySelectorAll('section[id]')
+					};
 
-function scrollActive(){
-    const scrollY = window.pageYOffset
+					off = function() {
 
-    sections.forEach(current =>{
-        const sectionHeight = current.offsetHeight
-        const sectionTop = current.offsetTop - 50;
-        sectionId = current.getAttribute('id')
+						$this
+							.css('background-position', '');
 
-        if(scrollY > sectionTop && scrollY <= sectionTop + sectionHeight){
-            document.querySelector('.nav__menu a[href*=' + sectionId + ']').classList.add('active-link')
-        }else{
-            document.querySelector('.nav__menu a[href*=' + sectionId + ']').classList.remove('active-link')
-        }
-    })
-}
-window.addEventListener('scroll', scrollActive)
-/*==================== CHANGE BACKGROUND HEADER ====================*/ 
-function scrollHeader(){
-    const nav = document.getElementById('header')
-    //when the scroll is greater than 80 viewport height, add the scroll-header class to the header tag
-    if(this.scrollY >= 80) nav.classList.add('scroll-header'); else nav.classList.remove('scroll-header')
-}
-window.addEventListener('scroll', scrollHeader)
+						$window
+							.off('scroll._parallax');
 
+					};
 
-/*==================== SHOW SCROLL UP ====================*/ 
-function scrollUp(){
-    const scrollUp = document.getElementById('scroll-up');
-    // When the scroll is higher than 560 viewport height, add the show-scroll class to the a tag with the scroll-top class
-    if(this.scrollY >= 560) scrollUp.classList.add('show-scroll'); else scrollUp.classList.remove('show-scroll')
-}
-window.addEventListener('scroll', scrollUp)
-/*==================== DARK LIGHT THEME ====================*/ 
+					breakpoints.on('<=medium', off);
+					breakpoints.on('>medium', on);
 
-const themeButton = document.getElementById ('theme-button')
-const darkTheme = 'dark-theme'
-const iconTheme = 'uil-sun'
+				});
 
-//previously selected topic (if user selected)
+				return $(this);
 
-const selectedTheme = localStorage.getItem('selected-theme')
-const selectedIcon = localStorage.getItem('selected-icon')
+			};
 
-//we obtain the currennt theme that the interface has by validating the dark-theme class
+			$window
+				.on('load resize', function() {
+					$window.trigger('scroll');
+				});
 
-const getCurrentTheme = () => document.body.classList.contains(darkTheme) ? 'dark' : 'light'
-const getCurrentIcon = () => themeButton.classList.contains(iconTheme)  ? 'uil-moon' : 'uil-sun'
+		}
 
-//we validate if the user previously chose a topic
+	// Spotlights.
+		var $spotlights = $('.spotlight');
 
-if(selectedTheme){
-    // if the validation id fulfilled, we ask what the issue was to know if we activated or deactiavted the dark Theme
+		$spotlights
+			._parallax()
+			.each(function() {
 
-    document.body.classList[selectedTheme === 'dark' ? 'add' : 'remove'](darkTheme)
-    themeButton.classList[selectedIcon === 'uil-moon'? 'add' : 'remove'](iconTheme)
-}
+				var $this = $(this),
+					on, off;
 
-//activate / deactivate the theme manually with the button
+				on = function() {
 
-themeButton.addEventListener('click', () =>{
+					var top, bottom, mode;
 
-    // Add or remove the dark / icon theme
+					// Use main <img>'s src as this spotlight's background.
+						$this.css('background-image', 'url("' + $this.find('.image.main > img').attr('src') + '")');
 
-    document.body.classList.toggle(darkTheme)
-    themeButton.classList.toggle(iconTheme)
+					// Side-specific scrollex tweaks.
+						if ($this.hasClass('top')) {
 
-    // we save the theme and the current icon that the user chose
-    localStorage.setItem('selected-theme', getCurrentTheme())
-    localStorage.setItem('seleted-icon', getCurrentIcon())
-})
+							mode = 'top';
+							top = '-20%';
+							bottom = 0;
 
-/*==================== EMAIL.JS ====================*/ 
+						}
+						else if ($this.hasClass('bottom')) {
 
-const btn = document.getElementById('button');
+							mode = 'bottom-only';
+							top = 0;
+							bottom = '20%';
 
-document.getElementById('form')
- .addEventListener('submit', function(event) {
-   event.preventDefault();
+						}
+						else {
 
-   btn.value = 'Sending...';
+							mode = 'middle';
+							top = 0;
+							bottom = 0;
 
-   const serviceID = 'default_service';
-   const templateID = 'template_ure4mek';
+						}
 
-   emailjs.sendForm(serviceID, templateID, this)
-    .then(() => {
-      btn.value = 'Send Email';
-      alert('Sent!');
-    }, (err) => {
-      btn.value = 'Send Email';
-      alert(JSON.stringify(err));
-    });
-});
+					// Add scrollex.
+						$this.scrollex({
+							mode:		mode,
+							top:		top,
+							bottom:		bottom,
+							initialize:	function(t) { $this.addClass('inactive'); },
+							terminate:	function(t) { $this.removeClass('inactive'); },
+							enter:		function(t) { $this.removeClass('inactive'); },
+
+							// Uncomment the line below to "rewind" when this spotlight scrolls out of view.
+
+							//leave:	function(t) { $this.addClass('inactive'); },
+
+						});
+
+				};
+
+				off = function() {
+
+					// Clear spotlight's background.
+						$this.css('background-image', '');
+
+					// Remove scrollex.
+						$this.unscrollex();
+
+				};
+
+				breakpoints.on('<=medium', off);
+				breakpoints.on('>medium', on);
+
+			});
+
+	// Wrappers.
+		var $wrappers = $('.wrapper');
+
+		$wrappers
+			.each(function() {
+
+				var $this = $(this),
+					on, off;
+
+				on = function() {
+
+					$this.scrollex({
+						top:		250,
+						bottom:		0,
+						initialize:	function(t) { $this.addClass('inactive'); },
+						terminate:	function(t) { $this.removeClass('inactive'); },
+						enter:		function(t) { $this.removeClass('inactive'); },
+
+						// Uncomment the line below to "rewind" when this wrapper scrolls out of view.
+
+						//leave:	function(t) { $this.addClass('inactive'); },
+
+					});
+
+				};
+
+				off = function() {
+					$this.unscrollex();
+				};
+
+				breakpoints.on('<=medium', off);
+				breakpoints.on('>medium', on);
+
+			});
+
+	// Banner.
+		var $banner = $('#banner');
+
+		$banner
+			._parallax();
+
+})(jQuery);
